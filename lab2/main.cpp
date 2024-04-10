@@ -118,40 +118,48 @@ int FindOptimalPath(std::vector<std::vector<char>>& field, int combLevel)
 
             std::cout << nx << ' ' << ny << '\n';
 
-            Comb selectedComb{};
-
-            if (combField[ny][nx].y == -1 && combField[ny][nx].x == -1)
+            if (nx >= 0 && ny >= 0 && nx < field[ny].size() && ny < field.size())
             {
-                selectedComb.x = nx;
-                selectedComb.y = ny;
-                combField[ny][nx] = selectedComb;
-            } else
-            {
-                std::cout << selectedComb.isWave << '\n';
-                selectedComb = combField[ny][nx];
-            }
+                Comb selectedComb{};
 
-            if (nx >= 0 && ny >= 0 && nx < field[ny].size() && ny < field.size() && !selectedComb.isWave &&
-                field[ny][nx] == 'D')
-            {
-                selectedComb.ch = field[ny][nx];
-                selectedComb.isWave = true;
-
-                selectedComb.pathLength = prevComb.pathLength + 1;
-                combQueue.push(selectedComb);
-                combField[ny][nx] = selectedComb;
-
-                tempVector[selectedComb.y][selectedComb.x] = char(selectedComb.pathLength + 48);
-
-                if (ny == 0 || ny == (2 * combLevel) - 2 || nx == 0 || (ny <= combLevel && nx >= (combLevel + ny) ||
-                                                                        (ny > combLevel &&
-                                                                         nx >= (combLevel - (ny - combLevel)))))
+                if (combField[ny][nx].y == -1 && combField[ny][nx].x == -1)
                 {
-                    minPath = std::min(minPath, selectedComb.pathLength);
+                    selectedComb.x = nx;
+                    selectedComb.y = ny;
+                    combField[ny][nx] = selectedComb;
+                } else
+                {
+                    std::cout << selectedComb.isWave << '\n';
+                    selectedComb = combField[ny][nx];
                 }
 
-                printVector(tempVector, combLevel);
 
+                if (!selectedComb.isWave &&
+                    field[ny][nx] == 'D')
+                {
+                    selectedComb.ch = field[ny][nx];
+                    selectedComb.isWave = true;
+
+                    selectedComb.pathLength = prevComb.pathLength + 1;
+                    combQueue.push(selectedComb);
+                    combField[ny][nx] = selectedComb;
+
+                    tempVector[selectedComb.y][selectedComb.x] = char(selectedComb.pathLength + 48);
+
+                    if (ny == 0 || ny == (2 * combLevel) - 2 || nx == 0 || (ny <= combLevel && nx >= (combLevel + ny) ||
+                                                                            (ny > combLevel &&
+                                                                             nx >= (combLevel - (ny - combLevel)))))
+                    {
+                        std::cout << "isEdge: " << ny << ' ' << nx << '\n';
+                        minPath = std::min(minPath, selectedComb.pathLength);
+                    }
+
+                    printVector(tempVector, combLevel);
+
+                }
+            } else
+            {
+                std::cout << "else: " << ny << ' ' << nx << '\n';
             }
         }
     }
