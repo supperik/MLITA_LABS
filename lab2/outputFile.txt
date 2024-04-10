@@ -1,2 +1,0 @@
-Time taken by function: 1 milliseconds
-0
