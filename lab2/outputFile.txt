@@ -1,2 +1,2 @@
-Time taken by function: 28 milliseconds
+Time taken by function: 1 milliseconds
 0

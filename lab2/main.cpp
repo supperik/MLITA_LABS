@@ -50,7 +50,6 @@ int FindOptimalPath(std::vector<std::vector<char>>& field, int combLevel)
 
     Comb startComb;
 
-
     for (int i = 0; i < 2 * combLevel - 1; i++)
     {
         for (int j = 0; j < field[i].size(); j++)
@@ -66,13 +65,13 @@ int FindOptimalPath(std::vector<std::vector<char>>& field, int combLevel)
     std::queue<Comb> combQueue;
     std::vector<std::vector<int>> isWave;
 
-    std::vector<std::vector<char>> tempVector = field;
+    std::vector<std::vector<char>> tempVector;
 
     combQueue.push(startComb);
     while (!combQueue.empty())
     {
-        Comb* prevComb = new Comb;
-        *prevComb = combQueue.front();
+        Comb prevComb;
+        prevComb = combQueue.front();
 
         combQueue.pop();
 
@@ -80,56 +79,47 @@ int FindOptimalPath(std::vector<std::vector<char>>& field, int combLevel)
         {
             int nx, ny;
 
-            if (prevComb->y < combLevel - 1)
+            if (prevComb.y < combLevel - 1)
             {
-                nx = prevComb->x + dxTop[dir];
-                ny = prevComb->y + dyTop[dir];
+                nx = prevComb.x + dxTop[dir];
+                ny = prevComb.y + dyTop[dir];
             }
-            if (prevComb->y > combLevel - 1)
+            if (prevComb.y > combLevel - 1)
             {
-                nx = prevComb->x + dxUnder[dir];
-                ny = prevComb->y + dyUnder[dir];
+                nx = prevComb.x + dxUnder[dir];
+                ny = prevComb.y + dyUnder[dir];
             }
-            if (prevComb->y == combLevel - 1)
+            if (prevComb.y == combLevel - 1)
             {
-                nx = prevComb->x + dxCenter[dir];
-                ny = prevComb->y + dyCenter[dir];
+                nx = prevComb.x + dxCenter[dir];
+                ny = prevComb.y + dyCenter[dir];
             }
 
             Comb selectedComb;
 
+
             selectedComb.x = nx;
             selectedComb.y = ny;
 
-            if (nx >= 0 && ny >= 0 && nx < field[ny].size() && ny < field.size() && !prevComb->isWave && field[ny][nx] == 'D')
+            if (nx >= 0 && ny >= 0 && nx < field[ny].size() && ny < field.size() && !prevComb.isWave &&
+                field[ny][nx] == 'D')
             {
                 selectedComb.ch = field[ny][nx];
                 selectedComb.isWave = true;
 
-                if (selectedComb.ch == 'D')
-                {
-                    isWave.push_back({ny, ny});
-                    tempVector[ny][nx] = char(prevComb->pathLength + 1 + 48);
-                    selectedComb.pathLength = prevComb->pathLength + 1;
-                    combQueue.push(selectedComb);
-                }
+                isWave.push_back({ny, ny});
 
-                if (ny == 0 || ny == (2 * combLevel) - 2 || nx == 0 || (ny <= combLevel && nx >= (combLevel + ny) || (ny > combLevel && nx >= (combLevel - (ny - combLevel)))))
+                selectedComb.pathLength = prevComb.pathLength + 1;
+                combQueue.push(selectedComb);
+
+                if (ny == 0 || ny == (2 * combLevel) - 2 || nx == 0 || (ny <= combLevel && nx >= (combLevel + ny) ||
+                                                                        (ny > combLevel &&
+                                                                         nx >= (combLevel - (ny - combLevel)))))
                 {
                     minPath = std::min(minPath, selectedComb.pathLength);
                 }
             }
-            for (std::vector<char> askdjfh: tempVector)
-            {
-                for (char ch: askdjfh)
-                {
-                    std::cout << ch;
-                }
-                std::cout << '\n';
-            }
         }
-
-        delete prevComb;
     }
     if (minPath == INT_MAX)
     {
@@ -167,16 +157,16 @@ std::vector<std::vector<char>> ReadFile(std::ifstream& inputFile, int& combLevel
     std::string line;
     getline(inputFile, line);
     combLevel = int(line[0]) - 48;
-
-    std::vector<std::vector<char>> field(2 * combLevel - 1);
+    char ch;
+    int lineNum = 0;
+    std::vector<std::vector<char>> field(2 * combLevel - 1, std::vector<char>(2 * combLevel - 1));
     while (getline(inputFile, line))
     {
-        std::vector<char> tempVector;
-        for (char i : line)
+        for (int j = 0; j < line.size(); j++)
         {
-            tempVector.push_back(i);
+            field[lineNum][j] = line[j];
         }
-        field.push_back(tempVector);
+        lineNum++;
     }
     return field;
 }
