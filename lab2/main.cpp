@@ -51,7 +51,7 @@ int FindOptimalPath(std::vector<std::vector<char>>& field, int combLevel)
 {
     int minPath = INT_MAX;
 
-    int dxUnder[6] = {-1, -1, -1, 0, 1, 0};
+    int dxUnder[6] = {0, -1, -1, 1, 1, 0};
     int dyUnder[6] = {-1, 0, 1, -1, 0, 1};
 
     int dxTop[6] = {-1, -1, 0, 0, 1, 1};
@@ -116,8 +116,6 @@ int FindOptimalPath(std::vector<std::vector<char>>& field, int combLevel)
                 ny = prevComb.y + dyCenter[dir];
             }
 
-            std::cout << nx << ' ' << ny << '\n';
-
             if (nx >= 0 && ny >= 0 && nx < field[ny].size() && ny < field.size())
             {
                 Comb selectedComb{};
@@ -129,7 +127,6 @@ int FindOptimalPath(std::vector<std::vector<char>>& field, int combLevel)
                     combField[ny][nx] = selectedComb;
                 } else
                 {
-                    std::cout << selectedComb.isWave << '\n';
                     selectedComb = combField[ny][nx];
                 }
 
@@ -150,19 +147,14 @@ int FindOptimalPath(std::vector<std::vector<char>>& field, int combLevel)
                                                                             (ny > combLevel &&
                                                                              nx >= (combLevel - (ny - combLevel)))))
                     {
-                        std::cout << "isEdge: " << ny << ' ' << nx << '\n';
                         minPath = std::min(minPath, selectedComb.pathLength);
                     }
-
-                    printVector(tempVector, combLevel);
-
                 }
-            } else
-            {
-                std::cout << "else: " << ny << ' ' << nx << '\n';
             }
+            //printVector(tempVector, combLevel);
         }
     }
+
     if (minPath == INT_MAX)
     {
         return 0;
@@ -198,10 +190,10 @@ std::vector<std::vector<char>> ReadFile(std::ifstream& inputFile, int& combLevel
 {
     std::string line;
     getline(inputFile, line);
-    combLevel = int(line[0]) - 48;
-    char ch;
+    combLevel = std::stoi(line);
     int lineNum = 0;
     std::vector<std::vector<char>> field(2 * combLevel - 1, std::vector<char>(2 * combLevel - 1));
+
     while (getline(inputFile, line))
     {
         for (int j = 0; j < line.size(); j++)
@@ -216,6 +208,15 @@ std::vector<std::vector<char>> ReadFile(std::ifstream& inputFile, int& combLevel
 int main(int argc, char *argv[])
 {
     auto start = std::chrono::high_resolution_clock::now();
+
+    if (argc == 1)
+    {
+        argc = 3;
+        std::string str1 = "inputFile2.txt";
+        std::string str2 = "outputFile.txt";
+        argv[1] = str1.data();
+        argv[2] = str2.data();
+    }
 
     std::ifstream inputFile(argv[1]);
     std::ofstream outputFile(argv[2]);
