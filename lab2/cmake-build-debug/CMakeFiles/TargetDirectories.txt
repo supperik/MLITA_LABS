@@ -1,3 +1,0 @@
-O:/MLITA_LABS/lab2/cmake-build-debug/CMakeFiles/lab2.dir
-O:/MLITA_LABS/lab2/cmake-build-debug/CMakeFiles/edit_cache.dir
-O:/MLITA_LABS/lab2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
