@@ -46,9 +46,17 @@ void findingTheOptimalPath(int x, int y, int taken, vector<vector<int>> &board, 
 int main(int argc, char* argv[]) {
     auto start = chrono::high_resolution_clock::now();
 
-    ifstream input("input9.txt");
-    ofstream output("output.txt");
+    if (argc == 1)
+    {
+        argc = 3;
+        std::string str1 = "input9.txt";
+        std::string str2 = "output.txt";
+        argv[1] = str1.data();
+        argv[2] = str2.data();
+    }
 
+    ifstream input(argv[1]);
+    ofstream output(argv[2]);
 
     if (!input.is_open()) {
         output << "Error opening file." << endl;
