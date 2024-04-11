@@ -9,7 +9,7 @@
 struct Comb {
     int x = -1, y = -1, pathLength = 0;
     bool isWave = false;
-    char ch;
+    char ch{};
 };
 
 void PrintVector(std::vector<std::vector<char>> &vector, int combLevel) {
@@ -126,8 +126,8 @@ int FindOptimalPath(std::vector<std::vector<char>> &field, int combLevel) {
     return minPath;
 }
 
-bool ValidateInputs(int argc, char *argv[], std::ifstream &inputFile, std::ofstream &outputFile) {
-    if (argc != 3) {
+bool ValidateInputs(int argc, std::ifstream &inputFile, std::ofstream &outputFile) {
+    if (argc != 3 && argc != 1) {
         std::cerr << "Usage: main.exe <inputFile> <outputFile>" << std::endl;
         return false;
     }
@@ -177,7 +177,7 @@ int main(int argc, char *argv[]) {
 
     int combLevel;
 
-    if (!ValidateInputs(argc, argv, inputFile, outputFile)) {
+    if (!ValidateInputs(argc, inputFile, outputFile)) {
         return 1;
     }
 
