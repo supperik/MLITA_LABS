@@ -1,3 +1,12 @@
+//Пчелы живут в ульях, где есть соты. Соты представляют собой поле правильных шестиугольников, соприкасающихся друг с другом. Правильное поле строится следующим образом:
+//сначала имеется всего одна сота (рис. 1) – это правильное поле первого уровня;
+//затем вокруг соты появляются соседние (рис. 2) – это правильное поле второго уровня;
+//затем строится еще один «ободок» (рис. 3) – это правильное поле третьего уровня, и т. д.
+//Пчела Майя возвращается в улей. Она живет в одной из сот правильного поля уровня N (2 ≤ N ≤ 20). Для того, чтобы добраться до своей соты (если она не расположена с краю поля), Майе нужно переместиться через другие соты, в которых могут жить как друзья (перемещаться можно), так и враги (перемещаться нельзя). Майя очень устала и хочет добраться до своей соты, пройдя через минимальное число других сот. Свой путь она может начинать с любой дружественной соты, находящейся с краю поля (то есть такой соты, которая не окружена со всех сторон соседними сотами).
+
+// Попов Никита ПС-23
+// CLION 2023
+
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -5,6 +14,7 @@
 #include <climits>
 #include <chrono>
 #include <algorithm>
+#include <string>
 
 struct Comb {
     int x = -1, y = -1, pathLength = 0;
@@ -12,7 +22,7 @@ struct Comb {
     char ch{};
 };
 
-void PrintVector(std::vector<std::vector<char>> &vector, int combLevel) {
+void PrintVector(std::vector<std::vector<std::string>> &vector, int combLevel) {
     for (int i = 0; i < 2 * combLevel - 1; i++) {
         for (int j = 0; j < vector[i].size(); j++) {
             std::cout << vector[i][j];
@@ -50,16 +60,18 @@ int FindOptimalPath(std::vector<std::vector<char>> &field, int combLevel) {
 
     startComb = GetStartComb(field, startComb, combLevel);
 
-    std::queue<Comb> combQueue;
-    std::vector<std::vector<Comb>> combField(2 * combLevel - 1, std::vector<Comb>(2 * combLevel - 1));
+    std::vector<std::vector<std::string>> tempVector(2 * combLevel - 1, std::vector<std::string>(2 * combLevel - 1));
 
-    std::vector<std::vector<char>> tempVector(2 * combLevel - 1, std::vector<char>(2 * combLevel - 1));
-
-    for (int i = 0; i < 2 * combLevel - 1; i++) {
-        for (int j = 0; j < field[i].size(); j++) {
+    for (int i = 0; i < combLevel * 2 - 1; i++)
+    {
+        for (int j = 0; j < field[i].size(); j++)
+        {
             tempVector[i][j] = field[i][j];
         }
     }
+
+    std::queue<Comb> combQueue;
+    std::vector<std::vector<Comb>> combField(2 * combLevel - 1, std::vector<Comb>(2 * combLevel - 1));
 
     combQueue.push(startComb);
 
@@ -105,19 +117,16 @@ int FindOptimalPath(std::vector<std::vector<char>> &field, int combLevel) {
                     combQueue.push(selectedComb);
                     combField[ny][nx] = selectedComb;
 
-                    tempVector[selectedComb.y][selectedComb.x] = char(selectedComb.pathLength + 48);
+                    tempVector[ny][ny] = std::to_string(selectedComb.pathLength + 48);
 
                     if (ny == 0 || ny == (2 * combLevel) - 2 || nx == 0 ||
                         ((ny <= combLevel - 1 && nx == combLevel + ny - 1) ||
                         (ny > combLevel - 1 && nx == 2 * combLevel - 2 - (ny - combLevel)))) {
-                        PrintVector(tempVector, combLevel);
-                        std::cout << '\n';
                         minPath = std::min(minPath, selectedComb.pathLength);
                     }
                 }
             }
         }
-
     }
 
     if (minPath == INT_MAX) {
@@ -175,7 +184,7 @@ int main(int argc, char *argv[]) {
     std::ifstream inputFile(argv[1]);
     std::ofstream outputFile(argv[2]);
 
-    int combLevel;
+    int combLevel = 0;
 
     if (!ValidateInputs(argc, inputFile, outputFile)) {
         return 1;
@@ -189,7 +198,7 @@ int main(int argc, char *argv[]) {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
     outputFile << "Time taken by function: " << duration.count() << " milliseconds" << std::endl;
-    outputFile << result;
+    outputFile << result + 1;
 
     inputFile.close();
     outputFile.close();
