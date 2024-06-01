@@ -63,6 +63,14 @@ int count_shuffles(std::vector<std::vector<int>> &matrix) {
 int main(int argc, char* argv[]) {
     auto start = std::chrono::high_resolution_clock::now(); // Начало измерения времени
 
+    if (argc == 1) {
+        argc = 3;
+        std::string str1 = "INPUT.TXT";
+        std::string str2 = "OUTPUT.TXT";
+        argv[1] = str1.data();
+        argv[2] = str2.data();
+    }
+
     std::ifstream fin(argv[1]);
     std::ofstream fout(argv[2]);
 
